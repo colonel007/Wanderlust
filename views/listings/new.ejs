@@ -1,0 +1,177 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="row">
+    <div class="col-8 offset-2">
+        <br><br>
+
+        <h3>Create a New Listing</h3>
+
+        <form
+            id="listing-form"
+            method="POST"
+            action="/listings"
+            class="needs-validation"
+            novalidate
+            enctype="multipart/form-data"
+        >
+
+            <!-- Title -->
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input
+                    type="text"
+                    name="listing[title]"
+                    id="title"
+                    class="form-control"
+                    placeholder="Enter title"
+                    required
+                >
+                <div class="valid-feedback">
+                    Title looks good!
+                </div>
+                <div class="invalid-feedback">
+                    Please enter a title.
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                    name="listing[description]"
+                    id="description"
+                    class="form-control"
+                    placeholder="Enter description"
+                    required
+                ></textarea>
+                <div class="invalid-feedback">
+                    Please enter a short description.
+                </div>
+            </div>
+
+            <!-- Image -->
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload Image</label>
+                <input
+                    type="file"
+                    name="listing[image]"
+                    id="image"
+                    class="form-control"
+                    accept="image/*"
+                    required
+                >
+                <div class="invalid-feedback">
+                    Please upload an image.
+                </div>
+            </div>
+
+            <!-- Categories (multi-select via checkboxes) -->
+            <div class="mb-3">
+                <label class="form-label d-block">Categories <small class="text-muted">(pick one or more)</small></label>
+                <div class="d-flex flex-wrap gap-3">
+                    <% for (let cat of categories) { %>
+                        <div class="form-check">
+                            <input
+                                class="form-check-input category-checkbox"
+                                type="checkbox"
+                                name="listing[categories][]"
+                                id="cat-<%= cat.name.replace(/\s+/g, '-') %>"
+                                value="<%= cat.name %>"
+                            >
+                            <label class="form-check-label" for="cat-<%= cat.name.replace(/\s+/g, '-') %>">
+                                <i class="<%= cat.icon %>"></i> <%= cat.name %>
+                            </label>
+                        </div>
+                    <% } %>
+                </div>
+                <div id="category-error" class="text-danger small mt-1 d-none">
+                    Please choose at least one category.
+                </div>
+            </div>
+
+            <div class="row">
+
+                <!-- Price -->
+                <div class="mb-3 col-md-4">
+                    <label for="price" class="form-label">Price</label>
+                    <input
+                        type="number"
+                        name="listing[price]"
+                        id="price"
+                        class="form-control"
+                        placeholder="Enter price"
+                        min="0"
+                        required
+                    >
+
+                    <div class="invalid-feedback">
+                        Please enter a valid price.
+                    </div>
+                </div>
+
+                <!-- Location -->
+                <div class="mb-3 col-md-8">
+                    <label for="location" class="form-label">Location</label>
+                    <input
+                        type="text"
+                        name="listing[location]"
+                        id="location"
+                        class="form-control"
+                        placeholder="Enter location"
+                        required
+                    >
+                    <div class="invalid-feedback">
+                        Please enter a location.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Country -->
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input
+                    type="text"
+                    name="listing[country]"
+                    id="country"
+                    class="form-control"
+                    placeholder="Enter country"
+                    required
+                >
+
+                <div class="invalid-feedback">
+                    Please enter a country.
+                </div>
+            </div>
+
+            <button class="btn btn-dark add-btn">
+                Add
+            </button>
+
+            <br><br>
+
+        </form>
+    </div>
+</div>
+
+<script>
+  // Require at least one category checkbox (HTML "required" can't do this for a group)
+  (() => {
+    const form = document.getElementById('listing-form');
+    const boxes = document.querySelectorAll('.category-checkbox');
+    const error = document.getElementById('category-error');
+
+    const sync = () => {
+      const any = [...boxes].some((b) => b.checked);
+      boxes[0].setCustomValidity(any ? '' : 'Pick at least one category');
+      if (any) error.classList.add('d-none');
+      return any;
+    };
+
+    boxes.forEach((b) => b.addEventListener('change', sync));
+    form.addEventListener('submit', () => {
+      if (!sync()) error.classList.remove('d-none');
+    });
+    sync();
+  })();
+</script>

@@ -1,0 +1,158 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="row mt-3">
+    <div class="col-8 offset-2">
+        <h3>Edit your Listing</h3>
+
+        <form id="listing-form" method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="title"
+                    name="listing[title]"
+                    value="<%= listing.title %>"
+                    required
+                >
+                <div class="valid-feedback">
+                    Title looks good!
+                </div>
+                <div class="invalid-feedback">
+                    Please enter a title.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                    class="form-control"
+                    id="description"
+                    name="listing[description]"
+                    required><%= listing.description %></textarea>
+                <div class="invalid-feedback">
+                    Please enter a short description.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                Original Listing Image <br />
+                <img src="<%= originalImageUrl %>" alt="Original Image" />
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload new Image</label>
+                <input
+                    type="file"
+                    class="form-control"
+                    id="image"
+                    name="listing[image]"
+                    accept="image/*"
+                >
+            </div>
+
+
+            <% const selected = listing.categories || []; %>
+            <div class="mb-3">
+                <label class="form-label d-block">Categories <small class="text-muted">(pick one or more)</small></label>
+                <div class="d-flex flex-wrap gap-3">
+                    <% for (let cat of categories) { %>
+                        <div class="form-check">
+                            <input
+                                class="form-check-input category-checkbox"
+                                type="checkbox"
+                                name="listing[categories][]"
+                                id="cat-<%= cat.name.replace(/\s+/g, '-') %>"
+                                value="<%= cat.name %>"
+                                <%= selected.includes(cat.name) ? 'checked' : '' %>
+                            >
+                            <label class="form-check-label" for="cat-<%= cat.name.replace(/\s+/g, '-') %>">
+                                <i class="<%= cat.icon %>"></i> <%= cat.name %>
+                            </label>
+                        </div>
+                    <% } %>
+                </div>
+                <div id="category-error" class="text-danger small mt-1 d-none">
+                    Please choose at least one category.
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-4">
+                    <label for="price" class="form-label">Price</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        id="price"
+                        name="listing[price]"
+                        value="<%= listing.price %>"
+                        min="0"
+                        required
+                    >
+                    <div class="invalid-feedback">
+                        Please enter a valid price.
+                    </div>
+                </div>
+
+                <div class="mb-3 col-md-8">
+                    <label for="location" class="form-label">Location</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="location"
+                        name="listing[location]"
+                        value="<%= listing.location %>"
+                        placeholder="Enter location"
+                        required
+                    >
+                    <div class="invalid-feedback">
+                        Please enter a location.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="country"
+                    name="listing[country]"
+                    value="<%= listing.country %>"
+                    placeholder="Enter country"
+                    required
+                >
+                <div class="invalid-feedback">
+                    Please enter a country.
+                </div>
+            </div>
+
+            <button class="btn btn-dark edit-btn mt-3">
+                Edit
+            </button>
+            <br><br>
+        </form>
+    </div>
+</div>
+
+<script>
+
+  (() => {
+    const form = document.getElementById('listing-form');
+    const boxes = document.querySelectorAll('.category-checkbox');
+    const error = document.getElementById('category-error');
+
+    const sync = () => {
+      const any = [...boxes].some((b) => b.checked);
+      boxes[0].setCustomValidity(any ? '' : 'Pick at least one category');
+      if (any) error.classList.add('d-none');
+      return any;
+    };
+
+    boxes.forEach((b) => b.addEventListener('change', sync));
+    form.addEventListener('submit', () => {
+      if (!sync()) error.classList.remove('d-none');
+    });
+    sync();
+  })();
+</script>
