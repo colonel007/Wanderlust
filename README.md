@@ -1,2 +1,2 @@
-# Wanderlust
-Wanderlust is a full-stack travel accommodation marketplace where users can explore, search, filter, create, edit, and review property listings with image uploads and interactive maps.
+#Wanderlust
+Wanderlust is a full-stack web application inspired by travel accommodation platforms. It allows users to browse destinations, search and filter listings by category, view detailed property information, and explore listing locations on interactive Mapbox maps. Authenticated users can create, update, and delete their own listings, upload property images through Cloudinary, and leave ratings and reviews. The application uses Node.js, Express, MongoDB, Mongoose, EJS, Passport.js, Cloudinary, and Mapbox.
