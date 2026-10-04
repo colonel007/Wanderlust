@@ -11,7 +11,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require('express-session');
-const MongoStore = require("connect-mongo");
+const MongoStore = require("connect-mongo").default;
 const listingsRouter = require("./routes/listing.js");
 const reviewsRouter = require("./routes/review.js");
 const flash = require("connect-flash");
@@ -49,7 +49,8 @@ const store = MongoStore.create({
 });
 
 
-store.on("error", () => {
+
+store.on("error", (err) => {
     console.log("ERROR in MONGO SESSION STORE",err);
 })
 const sessionOptions = { 
